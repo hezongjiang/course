@@ -1,0 +1,25 @@
+logging:
+  level:
+    org.springframework.web: info
+    com.github.binarywang.demo.wx.miniapp: debug
+    cn.binarywang.wx.miniapp: debug
+wx:
+  miniapp:
+    configs:
+        - appid: wx308c8ae596976e5f
+          secret: 749b06f2ad4227945ef2074d897db582
+          token: #微信小程序消息服务器配置的token
+          aesKey: #微信小程序消息服务器配置的EncodingAESKey
+          msgDataFormat: JSON
+
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 12345678
+        url: jdbc:mysql://localhost:3306/test?useSSL=false&socketTimeout=60000&connectTimeout=30000&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#        url: jdbc:mysql://8.138.158.168:3306/course?useSSL=false&socketTimeout=60000&connectTimeout=30000&serverTimezone=UTC&allowPublicKeyRetrieval=true
+
+mybatis:
+    mapper-locations: classpath*:mappers/*Mapper.xml
+

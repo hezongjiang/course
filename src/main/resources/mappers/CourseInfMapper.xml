@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.miniapp.repo.CourseInfMapper">
+  <resultMap id="BaseResultMap" type="com.course.miniapp.repo.model.CourseInf">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="place" jdbcType="VARCHAR" property="place" />
+    <result column="teacher" jdbcType="VARCHAR" property="teacher" />
+    <result column="xsks" jdbcType="VARCHAR" property="xsks" />
+    <result column="building" jdbcType="VARCHAR" property="building" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="duration" jdbcType="VARCHAR" property="duration" />
+    <result column="day_of_week" jdbcType="VARCHAR" property="dayOfWeek" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="class_of_day" jdbcType="VARCHAR" property="classOfDay" />
+    <result column="openid" jdbcType="VARCHAR" property="openid" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.course.miniapp.repo.model.CourseInf">
+    <result column="week_num" jdbcType="LONGVARCHAR" property="weekNum" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, place, teacher, xsks, building, name, duration, day_of_week, class_name, class_of_day,
+    openid
+  </sql>
+  <sql id="Blob_Column_List">
+    week_num
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from course_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from course_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.course.miniapp.repo.model.CourseInf">
+    insert into course_info (id, place, teacher,
+      xsks, building, name,
+      duration, day_of_week, class_name,
+      class_of_day, openid, week_num
+      )
+    values (#{id,jdbcType=INTEGER}, #{place,jdbcType=VARCHAR}, #{teacher,jdbcType=VARCHAR},
+      #{xsks,jdbcType=VARCHAR}, #{building,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{duration,jdbcType=VARCHAR}, #{dayOfWeek,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR},
+      #{classOfDay,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{weekNum,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.course.miniapp.repo.model.CourseInf">
+    insert into course_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="place != null">
+        place,
+      </if>
+      <if test="teacher != null">
+        teacher,
+      </if>
+      <if test="xsks != null">
+        xsks,
+      </if>
+      <if test="building != null">
+        building,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="duration != null">
+        duration,
+      </if>
+      <if test="dayOfWeek != null">
+        day_of_week,
+      </if>
+      <if test="className != null">
+        class_name,
+      </if>
+      <if test="classOfDay != null">
+        class_of_day,
+      </if>
+      <if test="openid != null">
+        openid,
+      </if>
+      <if test="weekNum != null">
+        week_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="place != null">
+        #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher != null">
+        #{teacher,jdbcType=VARCHAR},
+      </if>
+      <if test="xsks != null">
+        #{xsks,jdbcType=VARCHAR},
+      </if>
+      <if test="building != null">
+        #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null">
+        #{duration,jdbcType=VARCHAR},
+      </if>
+      <if test="dayOfWeek != null">
+        #{dayOfWeek,jdbcType=VARCHAR},
+      </if>
+      <if test="className != null">
+        #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="classOfDay != null">
+        #{classOfDay,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="weekNum != null">
+        #{weekNum,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.course.miniapp.repo.model.CourseInf">
+    update course_info
+    <set>
+      <if test="place != null">
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher != null">
+        teacher = #{teacher,jdbcType=VARCHAR},
+      </if>
+      <if test="xsks != null">
+        xsks = #{xsks,jdbcType=VARCHAR},
+      </if>
+      <if test="building != null">
+        building = #{building,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="duration != null">
+        duration = #{duration,jdbcType=VARCHAR},
+      </if>
+      <if test="dayOfWeek != null">
+        day_of_week = #{dayOfWeek,jdbcType=VARCHAR},
+      </if>
+      <if test="className != null">
+        class_name = #{className,jdbcType=VARCHAR},
+      </if>
+      <if test="classOfDay != null">
+        class_of_day = #{classOfDay,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null">
+        openid = #{openid,jdbcType=VARCHAR},
+      </if>
+      <if test="weekNum != null">
+        week_num = #{weekNum,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.course.miniapp.repo.model.CourseInf">
+    update course_info
+    set place = #{place,jdbcType=VARCHAR},
+      teacher = #{teacher,jdbcType=VARCHAR},
+      xsks = #{xsks,jdbcType=VARCHAR},
+      building = #{building,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      duration = #{duration,jdbcType=VARCHAR},
+      day_of_week = #{dayOfWeek,jdbcType=VARCHAR},
+      class_name = #{className,jdbcType=VARCHAR},
+      class_of_day = #{classOfDay,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR},
+      week_num = #{weekNum,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.course.miniapp.repo.model.CourseInf">
+    update course_info
+    set place = #{place,jdbcType=VARCHAR},
+      teacher = #{teacher,jdbcType=VARCHAR},
+      xsks = #{xsks,jdbcType=VARCHAR},
+      building = #{building,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      duration = #{duration,jdbcType=VARCHAR},
+      day_of_week = #{dayOfWeek,jdbcType=VARCHAR},
+      class_name = #{className,jdbcType=VARCHAR},
+      class_of_day = #{classOfDay,jdbcType=VARCHAR},
+      openid = #{openid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="selectByOpenId" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from course_info
+        where openid = #{openid}
+    </select>
+</mapper>

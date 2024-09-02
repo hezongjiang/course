@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.course.miniapp.repo.CourseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.course.miniapp.repo.model.CourseInfo">
+    <id column="course_id" jdbcType="BIGINT" property="courseId" />
+    <result column="weekday" jdbcType="VARCHAR" property="weekday" />
+    <result column="n_th" jdbcType="VARCHAR" property="nTh" />
+    <result column="course_info" jdbcType="VARCHAR" property="courseInfo" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    course_id, weekday, n_th, course_info, user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from course
+    where course_id = #{courseId,jdbcType=BIGINT}
+  </select>
+    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from course
+        where user_id = #{userId}
+    </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from course
+    where course_id = #{courseId,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByUserId" parameterType="java.lang.String">
+        delete from course
+        where user_id = #{userId}
+    </delete>
+  <insert id="insert" parameterType="com.course.miniapp.repo.model.CourseInfo">
+    insert into course (course_id, weekday, n_th,
+      course_info, user_id)
+    values (#{courseId,jdbcType=BIGINT}, #{weekday,jdbcType=VARCHAR}, #{nTh,jdbcType=VARCHAR},
+      #{courseInfo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR})
+  </insert>
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into course (course_id, weekday, n_th, course_info, user_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.courseId},
+            #{item.weekday},
+            #{item.nTh},
+            #{item.courseInfo},
+            #{item.userId}
+            )
+        </foreach>
+    </insert>
+  <insert id="insertSelective" parameterType="com.course.miniapp.repo.model.CourseInfo">
+    insert into course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        course_id,
+      </if>
+      <if test="weekday != null">
+        weekday,
+      </if>
+      <if test="nTh != null">
+        n_th,
+      </if>
+      <if test="courseInfo != null">
+        course_info,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseId != null">
+        #{courseId,jdbcType=BIGINT},
+      </if>
+      <if test="weekday != null">
+        #{weekday,jdbcType=VARCHAR},
+      </if>
+      <if test="nTh != null">
+        #{nTh,jdbcType=VARCHAR},
+      </if>
+      <if test="courseInfo != null">
+        #{courseInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.course.miniapp.repo.model.CourseInfo">
+    update course
+    <set>
+      <if test="weekday != null">
+        weekday = #{weekday,jdbcType=VARCHAR},
+      </if>
+      <if test="nTh != null">
+        n_th = #{nTh,jdbcType=VARCHAR},
+      </if>
+      <if test="courseInfo != null">
+        course_info = #{courseInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where course_id = #{courseId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.course.miniapp.repo.model.CourseInfo">
+    update course
+    set weekday = #{weekday,jdbcType=VARCHAR},
+      n_th = #{nTh,jdbcType=VARCHAR},
+      course_info = #{courseInfo,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR}
+    where course_id = #{courseId,jdbcType=BIGINT}
+  </update>
+</mapper>
