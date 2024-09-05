@@ -53,7 +53,7 @@ public class WxMaUserController {
             log.info(session.getSessionKey());
             log.info(session.getOpenid());
 
-            UserInfo userInfo = userInfoMapper.selectByPrimaryKey(code);
+            UserInfo userInfo = userInfoMapper.selectByPrimaryKey(session.getOpenid());
             if (userInfo != null && StringUtils.isNotBlank(userInfo.getUserid())) {
                 return ResultData.success(userInfo.getUserid());
             }
