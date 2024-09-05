@@ -22,4 +22,10 @@ public class DetailCourseInfoRes {
 
     @NotBlank
     private String userId;
+
+    private List<Integer> weekNum;
+
+    private String place;
+
+    private String teacher;
 }

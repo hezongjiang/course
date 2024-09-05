@@ -154,6 +154,9 @@ public class CourseController {
             course.setWeekday(e.getWeekday());
             course.setNTh(JSON.parseObject(e.getnTh(), new TypeReference<List<Integer>>() {}));
             course.setUserId(e.getUserId());
+            course.setPlace(e.getPlace());
+            course.setTeacher(e.getTeacher());
+            course.setWeekNum(JSON.parseObject(e.getWeekNum(), new TypeReference<List<Integer>>() {}));
             return course;
         }).collect(Collectors.toList());
         return ResultData.success(result);
