@@ -1,5 +1,6 @@
 package com.course.miniapp.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ public class DetailCourseInfoRes {
     @NotBlank
     private String weekday;
 
+    @JsonProperty("nTh")
     @NotEmpty
     private List<Integer> nTh;
 

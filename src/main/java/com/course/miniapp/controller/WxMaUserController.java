@@ -8,6 +8,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.binarywang.wx.miniapp.util.WxMaConfigHolder;
 import com.course.miniapp.repo.UserInfoMapper;
 import com.course.miniapp.repo.model.UserInfo;
+import com.course.miniapp.response.ResultData;
 import com.course.miniapp.utils.JsonUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +39,9 @@ public class WxMaUserController {
      * 登陆接口
      */
     @GetMapping("/login")
-    public String login(@PathVariable String appid, String code) {
+    public ResultData<String> login(@PathVariable String appid, String code) {
         if (StringUtils.isBlank(code)) {
-            return "empty code";
+            return ResultData.fail(0, "empty code");
         }
 
 //        if (!wxMaService.switchover(appid)) {
@@ -52,9 +53,9 @@ public class WxMaUserController {
             log.info(session.getSessionKey());
             log.info(session.getOpenid());
 
-            UserInfo userInfo = userInfoMapper.selectByPrimaryKey(session.getOpenid());
+            UserInfo userInfo = userInfoMapper.selectByPrimaryKey(code);
             if (userInfo != null && StringUtils.isNotBlank(userInfo.getUserid())) {
-                return userInfo.getUserid();
+                return ResultData.success(userInfo.getUserid());
             }
 
             String userid = "C_U_" + System.currentTimeMillis();
@@ -63,7 +64,7 @@ public class WxMaUserController {
             userInfo.setUserid(userid);
             userInfo.setSessionKey(userInfo.getSessionKey());
             userInfoMapper.insertSelective(userInfo);
-            return userid;
+            return ResultData.success(userid);
 
 //            final WxMaSubscribeMessage msg = WxMaSubscribeMessage
 //                .builder()
@@ -79,7 +80,7 @@ public class WxMaUserController {
 
         } catch (WxErrorException e) {
             log.error(e.getMessage(), e);
-            return e.toString();
+            return ResultData.fail(0, e.toString());
         } finally {
             WxMaConfigHolder.remove();//清理ThreadLocal
         }
