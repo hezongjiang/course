@@ -136,15 +136,18 @@
         where user_id = #{userId}
     </delete>
     <insert id="batchInsert" parameterType="java.util.List">
-        insert into course (course_id, weekday, n_th, course_info, user_id)
+        insert into course (course_id, weekday, n_th, course_info, user_id, week_num, place, teacher)
         values
         <foreach collection="list" item="item" separator=",">
             (
-            #{item.courseId},
-            #{item.weekday},
-            #{item.nTh},
-            #{item.courseInfo},
-            #{item.userId}
+             #{item.courseId},
+             #{item.weekday},
+             #{item.nTh},
+             #{item.courseInfo},
+             #{item.userId},
+             #{item.weekNum},
+             #{item.place},
+             #{item.teacher}
             )
         </foreach>
     </insert>

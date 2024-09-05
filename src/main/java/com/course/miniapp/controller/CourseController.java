@@ -97,6 +97,9 @@ public class CourseController {
             info.setUserId(courseInfo.getUserId());
             info.setWeekday(courseInfo.getWeekday());
             info.setnTh(JSON.toJSONString(courseInfo.getNTh()));
+            info.setWeekNum(JSON.toJSONString(courseInfo.getWeekNum()));
+            info.setTeacher(courseInfo.getTeacher());
+            info.setPlace(courseInfo.getPlace());
             result.add(info);
         }
         courseInfoMapper.batchInsert(result);
@@ -130,7 +133,7 @@ public class CourseController {
             courseInfo.setCourseId(System.currentTimeMillis());
             courseInfo.setUserId(userId);
             courseInfo.setCourseInfo(body.getWords());
-            courseInfo.setnTh(body.getRowStart().toString());
+            courseInfo.setnTh(JSON.toJSONString(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd())));
             courseInfo.setWeekday(body.getColStart().toString());
             result.add(courseInfo);
         }
