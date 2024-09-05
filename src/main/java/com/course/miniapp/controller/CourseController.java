@@ -44,7 +44,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/course")
 @Validated
 public class CourseController {
-
+//    UPDATE mysql.user SET authentication_string=PASSWORD('huyali520') WHERE User='root';
+//    FLUSH PRIVILEGES;
 //    @Autowired
 //    private CourseInfMapper courseInfMapper;
 
