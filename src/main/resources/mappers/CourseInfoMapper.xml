@@ -7,49 +7,31 @@
     <result column="n_th" jdbcType="VARCHAR" property="nTh" />
     <result column="course_info" jdbcType="VARCHAR" property="courseInfo" />
     <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="week_num" jdbcType="VARCHAR" property="weekNum" />
+    <result column="place" jdbcType="VARCHAR" property="place" />
+    <result column="teacher" jdbcType="VARCHAR" property="teacher" />
   </resultMap>
   <sql id="Base_Column_List">
-    course_id, weekday, n_th, course_info, user_id
+    course_id, weekday, n_th, course_info, user_id, week_num, place, teacher
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from course
     where course_id = #{courseId,jdbcType=BIGINT}
   </select>
-    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from course
-        where user_id = #{userId}
-    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from course
     where course_id = #{courseId,jdbcType=BIGINT}
   </delete>
-    <delete id="deleteByUserId" parameterType="java.lang.String">
-        delete from course
-        where user_id = #{userId}
-    </delete>
   <insert id="insert" parameterType="com.course.miniapp.repo.model.CourseInfo">
-    insert into course (course_id, weekday, n_th,
-      course_info, user_id)
-    values (#{courseId,jdbcType=BIGINT}, #{weekday,jdbcType=VARCHAR}, #{nTh,jdbcType=VARCHAR},
-      #{courseInfo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR})
+    insert into course (course_id, weekday, n_th, 
+      course_info, user_id, week_num, 
+      place, teacher)
+    values (#{courseId,jdbcType=BIGINT}, #{weekday,jdbcType=VARCHAR}, #{nTh,jdbcType=VARCHAR}, 
+      #{courseInfo,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{weekNum,jdbcType=VARCHAR}, 
+      #{place,jdbcType=VARCHAR}, #{teacher,jdbcType=VARCHAR})
   </insert>
-    <insert id="batchInsert" parameterType="java.util.List">
-        insert into course (course_id, weekday, n_th, course_info, user_id)
-        values
-        <foreach collection="list" item="item" separator=",">
-            (
-            #{item.courseId},
-            #{item.weekday},
-            #{item.nTh},
-            #{item.courseInfo},
-            #{item.userId}
-            )
-        </foreach>
-    </insert>
   <insert id="insertSelective" parameterType="com.course.miniapp.repo.model.CourseInfo">
     insert into course
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -68,6 +50,15 @@
       <if test="userId != null">
         user_id,
       </if>
+      <if test="weekNum != null">
+        week_num,
+      </if>
+      <if test="place != null">
+        place,
+      </if>
+      <if test="teacher != null">
+        teacher,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="courseId != null">
@@ -84,6 +75,15 @@
       </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="weekNum != null">
+        #{weekNum,jdbcType=VARCHAR},
+      </if>
+      <if test="place != null">
+        #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher != null">
+        #{teacher,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -102,6 +102,15 @@
       <if test="userId != null">
         user_id = #{userId,jdbcType=VARCHAR},
       </if>
+      <if test="weekNum != null">
+        week_num = #{weekNum,jdbcType=VARCHAR},
+      </if>
+      <if test="place != null">
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher != null">
+        teacher = #{teacher,jdbcType=VARCHAR},
+      </if>
     </set>
     where course_id = #{courseId,jdbcType=BIGINT}
   </update>
@@ -110,7 +119,33 @@
     set weekday = #{weekday,jdbcType=VARCHAR},
       n_th = #{nTh,jdbcType=VARCHAR},
       course_info = #{courseInfo,jdbcType=VARCHAR},
-      user_id = #{userId,jdbcType=VARCHAR}
+      user_id = #{userId,jdbcType=VARCHAR},
+      week_num = #{weekNum,jdbcType=VARCHAR},
+      place = #{place,jdbcType=VARCHAR},
+      teacher = #{teacher,jdbcType=VARCHAR}
     where course_id = #{courseId,jdbcType=BIGINT}
   </update>
+    <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from course
+        where user_id = #{userId}
+    </select>
+    <delete id="deleteByUserId" parameterType="java.lang.String">
+        delete from course
+        where user_id = #{userId}
+    </delete>
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into course (course_id, weekday, n_th, course_info, user_id)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.courseId},
+            #{item.weekday},
+            #{item.nTh},
+            #{item.courseInfo},
+            #{item.userId}
+            )
+        </foreach>
+    </insert>
 </mapper>

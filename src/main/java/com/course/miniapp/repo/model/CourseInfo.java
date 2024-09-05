@@ -1,21 +1,21 @@
 package com.course.miniapp.repo.model;
 
-import javax.validation.constraints.NotBlank;
-
 public class CourseInfo {
     private Long courseId;
 
-    @NotBlank
     private String weekday;
 
-    @NotBlank
     private String nTh;
 
-    @NotBlank
     private String courseInfo;
 
-    @NotBlank
     private String userId;
+
+    private String weekNum;
+
+    private String place;
+
+    private String teacher;
 
     public Long getCourseId() {
         return courseId;
@@ -55,5 +55,29 @@ public class CourseInfo {
 
     public void setUserId(String userId) {
         this.userId = userId == null ? null : userId.trim();
+    }
+
+    public String getWeekNum() {
+        return weekNum;
+    }
+
+    public void setWeekNum(String weekNum) {
+        this.weekNum = weekNum == null ? null : weekNum.trim();
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place == null ? null : place.trim();
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher == null ? null : teacher.trim();
     }
 }
