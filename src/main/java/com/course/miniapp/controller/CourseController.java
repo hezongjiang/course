@@ -6,9 +6,11 @@ import com.course.miniapp.repo.CourseInfoMapper;
 import com.course.miniapp.repo.model.CourseInfo;
 
 import com.course.miniapp.request.CourseInfoReq;
-import com.course.miniapp.response.CourseInfoResV2;
+import com.course.miniapp.response.DetailCourseInfoRes;
+import com.course.miniapp.response.SimpleCourseInfoRes;
 import com.course.miniapp.response.ResultData;
 import com.course.miniapp.response.TableResponse;
+import com.course.miniapp.utils.NumberUtil;
 import com.course.miniapp.utils.TableIdentifyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,38 @@ public class CourseController {
 
     @Autowired
     private CourseInfoMapper courseInfoMapper;
+
+    /**
+     * 解析图片课程
+     */
+    @PostMapping("/pic/analysis")
+    public ResultData<List<SimpleCourseInfoRes>> picAnalysis(@NotNull @RequestParam("image") MultipartFile file) throws IOException {
+
+        TableResponse tableResponse = TableIdentifyUtil.uploadImage(file);
+        if (tableResponse == null || tableResponse.getTablesResult() == null || tableResponse.getTablesResult().getBody() == null) {
+            log.info("课程解析失败");
+            return ResultData.fail(0, "课程图片解析失败");
+        }
+        List<TableResponse.Body> bodyList = tableResponse.getTablesResult().getBody();
+        List<SimpleCourseInfoRes> result = new ArrayList<>();
+        for (TableResponse.Body body : bodyList) {
+            if (weekday.contains(body.getWords())) {
+                continue;
+            }
+            if (body.getWords().contains("第") && body.getWords().contains("节")) {
+                continue;
+            }
+            if (body.getColStart() == 0 || body.getRowStart() == 0) {
+                continue;
+            }
+            SimpleCourseInfoRes courseInfo = new SimpleCourseInfoRes();
+            courseInfo.setCourseInfo(body.getWords());
+            courseInfo.setNTh(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd()));
+            courseInfo.setWeekday(body.getColStart().toString());
+            result.add(courseInfo);
+        }
+        return ResultData.success(result);
+    }
 
     /**
      * 创建课程
@@ -108,10 +142,10 @@ public class CourseController {
      * 获取课程
      */
     @GetMapping("/info")
-    public ResultData<List<CourseInfoResV2>> courseInfo(@NotBlank String userId) {
+    public ResultData<List<DetailCourseInfoRes>> courseInfo(@NotBlank String userId) {
         List<CourseInfo> courseInfos = courseInfoMapper.selectByUserId(userId);
-        List<CourseInfoResV2> result = courseInfos.stream().map(e -> {
-            CourseInfoResV2 course = new CourseInfoResV2();
+        List<DetailCourseInfoRes> result = courseInfos.stream().map(e -> {
+            DetailCourseInfoRes course = new DetailCourseInfoRes();
             course.setCourseId(e.getCourseId());
             course.setCourseInfo(e.getCourseInfo());
             course.setWeekday(e.getWeekday());

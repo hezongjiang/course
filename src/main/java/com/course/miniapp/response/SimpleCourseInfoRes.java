@@ -1,4 +1,4 @@
-package com.course.miniapp.request;
+package com.course.miniapp.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class CourseInfoReq {
+public class SimpleCourseInfoRes {
 
     @NotBlank
     private String weekday;
@@ -18,7 +18,4 @@ public class CourseInfoReq {
     private List<Integer> nTh;
 
     private String courseInfo;
-
-    @NotBlank
-    private String userId;
 }

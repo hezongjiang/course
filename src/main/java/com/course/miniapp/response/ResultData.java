@@ -19,12 +19,6 @@ public class ResultData<T> {
 
     private T data;
 
-    private long timestamp;
-
-    public ResultData() {
-        this.timestamp = System.currentTimeMillis();
-    }
-
     public static <T> ResultData<T> success(T data) {
         ResultData<T> resultData = new ResultData<>();
         resultData.setStatus(200);

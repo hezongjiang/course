@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-public class CourseInfoResV2 {
+public class DetailCourseInfoRes {
 
     private Long courseId;
 
