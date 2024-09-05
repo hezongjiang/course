@@ -10,6 +10,7 @@ import com.course.miniapp.repo.UserInfoMapper;
 import com.course.miniapp.repo.model.UserInfo;
 import com.course.miniapp.response.ResultData;
 import com.course.miniapp.utils.JsonUtils;
+import com.course.miniapp.utils.RandomStrGen;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -58,12 +59,11 @@ public class WxMaUserController {
                 return ResultData.success(userInfo.getUserid());
             }
 
-            String userid = "C_U_" + System.currentTimeMillis();
             userInfo = new UserInfo();
             userInfo.setOpenid(session.getOpenid());
-            userInfo.setUserid(userid);
+            userInfo.setUserid(RandomStrGen.generateUserId());
             userInfoMapper.insertSelective(userInfo);
-            return ResultData.success(userid);
+            return ResultData.success(userInfo.getUserid());
 
 //            final WxMaSubscribeMessage msg = WxMaSubscribeMessage
 //                .builder()

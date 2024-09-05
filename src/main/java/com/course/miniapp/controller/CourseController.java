@@ -11,6 +11,7 @@ import com.course.miniapp.response.SimpleCourseInfoRes;
 import com.course.miniapp.response.ResultData;
 import com.course.miniapp.response.TableResponse;
 import com.course.miniapp.utils.NumberUtil;
+import com.course.miniapp.utils.RandomStrGen;
 import com.course.miniapp.utils.TableIdentifyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class CourseController {
         List<CourseInfo> result = new ArrayList<>(courseInfos.size());
         for (CourseInfoReq courseInfo : courseInfos) {
             CourseInfo info = new CourseInfo();
-            info.setCourseId(System.currentTimeMillis());
+            info.setCourseId(RandomStrGen.generateCourseId());
             info.setCourseInfo(courseInfo.getCourseInfo());
             info.setUserId(courseInfo.getUserId());
             info.setWeekday(courseInfo.getWeekday());
@@ -130,7 +131,7 @@ public class CourseController {
                 continue;
             }
             CourseInfo courseInfo = new CourseInfo();
-            courseInfo.setCourseId(System.currentTimeMillis());
+            courseInfo.setCourseId(RandomStrGen.generateCourseId());
             courseInfo.setUserId(userId);
             courseInfo.setCourseInfo(body.getWords());
             courseInfo.setnTh(JSON.toJSONString(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd())));
