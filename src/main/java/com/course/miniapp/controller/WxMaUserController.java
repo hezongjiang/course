@@ -62,7 +62,6 @@ public class WxMaUserController {
             userInfo = new UserInfo();
             userInfo.setOpenid(session.getOpenid());
             userInfo.setUserid(userid);
-            userInfo.setSessionKey(userInfo.getSessionKey());
             userInfoMapper.insertSelective(userInfo);
             return ResultData.success(userid);
 
