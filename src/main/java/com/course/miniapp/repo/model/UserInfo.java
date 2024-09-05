@@ -5,8 +5,6 @@ public class UserInfo {
 
     private String userid;
 
-    private String sessionKey;
-
     public String getOpenid() {
         return openid;
     }
@@ -21,13 +19,5 @@ public class UserInfo {
 
     public void setUserid(String userid) {
         this.userid = userid == null ? null : userid.trim();
-    }
-
-    public String getSessionKey() {
-        return sessionKey;
-    }
-
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey == null ? null : sessionKey.trim();
     }
 }

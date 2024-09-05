@@ -4,10 +4,9 @@
   <resultMap id="BaseResultMap" type="com.course.miniapp.repo.model.UserInfo">
     <id column="openid" jdbcType="VARCHAR" property="openid" />
     <result column="userid" jdbcType="VARCHAR" property="userid" />
-    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
   </resultMap>
   <sql id="Base_Column_List">
-    openid, userid, session_key
+    openid, userid
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -28,9 +27,9 @@
     where openid = #{openid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.course.miniapp.repo.model.UserInfo">
-    insert into user_info (openid, userid, session_key
+    insert into user_info (openid, userid
       )
-    values (#{openid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{sessionKey,jdbcType=VARCHAR}
+    values (#{openid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.course.miniapp.repo.model.UserInfo">
@@ -42,9 +41,6 @@
       <if test="userid != null">
         userid,
       </if>
-      <if test="sessionKey != null">
-        session_key,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="openid != null">
@@ -52,9 +48,6 @@
       </if>
       <if test="userid != null">
         #{userid,jdbcType=VARCHAR},
-      </if>
-      <if test="sessionKey != null">
-        #{sessionKey,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -64,16 +57,12 @@
       <if test="userid != null">
         userid = #{userid,jdbcType=VARCHAR},
       </if>
-      <if test="sessionKey != null">
-        session_key = #{sessionKey,jdbcType=VARCHAR},
-      </if>
     </set>
     where openid = #{openid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.course.miniapp.repo.model.UserInfo">
     update user_info
-    set userid = #{userid,jdbcType=VARCHAR},
-      session_key = #{sessionKey,jdbcType=VARCHAR}
+    set userid = #{userid,jdbcType=VARCHAR}
     where openid = #{openid,jdbcType=VARCHAR}
   </update>
 </mapper>
