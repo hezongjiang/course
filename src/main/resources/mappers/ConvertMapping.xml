@@ -114,6 +114,75 @@
     </set>
     where course_id = #{courseId,jdbcType=BIGINT}
   </update>
+  <update id="updateByCourseIdAndUserId" parameterType="com.course.miniapp.repo.model.CourseInfo">
+    update course
+    <set>
+      <if test="weekday != null">
+        weekday =
+        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+          <foreach collection="list" item="i">
+            when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.weekday}
+          </foreach>
+        </trim>
+      </if>
+
+      <if test="nTh != null">
+        n_th =
+        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+          <foreach collection="list" item="i">
+            when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.nTh}
+          </foreach>,
+        </trim>
+      </if>
+
+      <if test="courseInfo != null">
+        course_info =
+        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+          <foreach collection="list" item="i">
+            when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.courseInfo}
+          </foreach>,
+        </trim>
+      </if>
+
+      <if test="weekNum != null">
+        week_num =
+        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+          <foreach collection="list" item="i">
+            when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.weekNum}
+          </foreach>,
+        </trim>
+      </if>
+
+      <if test="place != null">
+        place =
+        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+          <foreach collection="list" item="i">
+            when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.place}
+          </foreach>,
+        </trim>
+      </if>
+
+      <if test="teacher != null">
+        teacher =
+        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+          <foreach collection="list" item="i">
+            when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.teacher}
+          </foreach>,
+        </trim>
+      </if>
+    </set>
+
+    <where>
+      course_id in
+      <foreach collection="list" item="i" open="(" close=")" separator=",">
+        #{i.courseId}
+      </foreach>
+      and user_id in
+      <foreach collection="list" item="i" open="(" close=")" separator=",">
+        #{i.userId}
+      </foreach>
+    </where>
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.course.miniapp.repo.model.CourseInfo">
     update course
     set weekday = #{weekday,jdbcType=VARCHAR},

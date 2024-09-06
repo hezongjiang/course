@@ -1,15 +1,15 @@
 package com.course.miniapp.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.course.miniapp.repo.CourseInfoMapper;
 import com.course.miniapp.repo.model.CourseInfo;
 
 import com.course.miniapp.request.CourseInfoReq;
-import com.course.miniapp.response.DetailCourseInfoRes;
+import com.course.miniapp.response.DetailCourseInfo;
 import com.course.miniapp.response.SimpleCourseInfoRes;
 import com.course.miniapp.response.ResultData;
 import com.course.miniapp.response.TableResponse;
+import com.course.miniapp.utils.ConvertMapping;
 import com.course.miniapp.utils.NumberUtil;
 import com.course.miniapp.utils.RandomStrGen;
 import com.course.miniapp.utils.TableIdentifyUtil;
@@ -54,6 +54,19 @@ public class CourseController {
     @Autowired
     private CourseInfoMapper courseInfoMapper;
 
+
+
+    @PostMapping("/update")
+    public ResultData<Boolean> update(@Valid @RequestBody @NotEmpty List<DetailCourseInfo> req) {
+
+        courseInfoMapper.updateByCourseIdAndUserId(req.stream().map(e -> {
+            CourseInfo info = new CourseInfo();
+            info.setPlace(e.getPlace());
+            return info;
+        }).collect(Collectors.toList()));
+
+        return ResultData.success(true);
+    }
     /**
      * 解析图片课程
      */
@@ -77,33 +90,19 @@ public class CourseController {
             if (body.getColStart() == 0 || body.getRowStart() == 0) {
                 continue;
             }
-            SimpleCourseInfoRes courseInfo = new SimpleCourseInfoRes();
-            courseInfo.setCourseInfo(body.getWords());
-            courseInfo.setNTh(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd()));
-            courseInfo.setWeekday(body.getColStart().toString());
+            SimpleCourseInfoRes courseInfo = ConvertMapping.INSTANCE.buildSimpleCourseInfoRes(body);
             result.add(courseInfo);
         }
         return ResultData.success(result);
     }
+
 
     /**
      * 创建课程
      */
     @PostMapping("/createV2")
     public ResultData<Boolean> creatCourseInfoByCourse(@Valid @RequestBody @NotEmpty List<CourseInfoReq> courseInfos) {
-        List<CourseInfo> result = new ArrayList<>(courseInfos.size());
-        for (CourseInfoReq courseInfo : courseInfos) {
-            CourseInfo info = new CourseInfo();
-            info.setCourseId(RandomStrGen.generateCourseId());
-            info.setCourseInfo(courseInfo.getCourseInfo());
-            info.setUserId(courseInfo.getUserId());
-            info.setWeekday(courseInfo.getWeekday());
-            info.setnTh(JSON.toJSONString(courseInfo.getNTh()));
-            info.setWeekNum(JSON.toJSONString(courseInfo.getWeekNum()));
-            info.setTeacher(courseInfo.getTeacher());
-            info.setPlace(courseInfo.getPlace());
-            result.add(info);
-        }
+        List<CourseInfo> result = ConvertMapping.INSTANCE.convert2CourseInfoList(courseInfos);
         courseInfoMapper.batchInsert(result);
         return ResultData.success(true);
     }
@@ -131,36 +130,21 @@ public class CourseController {
             if (body.getColStart() == 0 || body.getRowStart() == 0) {
                 continue;
             }
-            CourseInfo courseInfo = new CourseInfo();
-            courseInfo.setCourseId(RandomStrGen.generateCourseId());
-            courseInfo.setUserId(userId);
-            courseInfo.setCourseInfo(body.getWords());
-            courseInfo.setnTh(JSON.toJSONString(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd())));
-            courseInfo.setWeekday(body.getColStart().toString());
+            CourseInfo courseInfo = ConvertMapping.INSTANCE.buildCourseInfo(userId, body);
             result.add(courseInfo);
         }
         courseInfoMapper.batchInsert(result);
         return ResultData.success(true);
     }
 
+
     /**
      * 获取课程
      */
     @GetMapping("/info")
-    public ResultData<List<DetailCourseInfoRes>> courseInfo(@NotBlank String userId) {
+    public ResultData<List<DetailCourseInfo>> courseInfo(@NotBlank String userId) {
         List<CourseInfo> courseInfos = courseInfoMapper.selectByUserId(userId);
-        List<DetailCourseInfoRes> result = courseInfos.stream().map(e -> {
-            DetailCourseInfoRes course = new DetailCourseInfoRes();
-            course.setCourseId(e.getCourseId());
-            course.setCourseInfo(e.getCourseInfo());
-            course.setWeekday(e.getWeekday());
-            course.setNTh(JSON.parseObject(e.getnTh(), new TypeReference<List<Integer>>() {}));
-            course.setUserId(e.getUserId());
-            course.setPlace(e.getPlace());
-            course.setTeacher(e.getTeacher());
-            course.setWeekNum(JSON.parseObject(e.getWeekNum(), new TypeReference<List<Integer>>() {}));
-            return course;
-        }).collect(Collectors.toList());
+        List<DetailCourseInfo> result = ConvertMapping.INSTANCE.convert2DetailCourseInfoList(courseInfos);
         return ResultData.success(result);
     }
 

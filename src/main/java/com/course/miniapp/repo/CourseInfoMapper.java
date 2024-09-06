@@ -22,6 +22,8 @@ public interface CourseInfoMapper {
 
     int updateByPrimaryKeySelective(CourseInfo record);
 
+    int updateByCourseIdAndUserId(@Param("list") List<CourseInfo> list);
+
     int updateByPrimaryKey(CourseInfo record);
 
     List<CourseInfo> selectByUserId(String userId);
