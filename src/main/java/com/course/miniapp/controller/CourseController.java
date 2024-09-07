@@ -1,25 +1,21 @@
 package com.course.miniapp.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.course.miniapp.repo.CourseInfoMapper;
 import com.course.miniapp.repo.model.CourseInfo;
-
 import com.course.miniapp.request.CourseInfoReq;
 import com.course.miniapp.response.DetailCourseInfo;
-import com.course.miniapp.response.SimpleCourseInfoRes;
 import com.course.miniapp.response.ResultData;
+import com.course.miniapp.response.SimpleCourseInfoRes;
 import com.course.miniapp.response.TableResponse;
-import com.course.miniapp.utils.ConvertMapping;
-import com.course.miniapp.utils.NumberUtil;
-import com.course.miniapp.utils.RandomStrGen;
+import com.course.miniapp.utils.ConvertData;
 import com.course.miniapp.utils.TableIdentifyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 获取课程
@@ -55,17 +50,14 @@ public class CourseController {
     private CourseInfoMapper courseInfoMapper;
 
 
-
-    @PostMapping("/update")
-    public ResultData<Boolean> update(@Valid @RequestBody @NotEmpty List<DetailCourseInfo> req) {
-
-        courseInfoMapper.updateByCourseIdAndUserId(req.stream().map(e -> {
-            CourseInfo info = new CourseInfo();
-            info.setPlace(e.getPlace());
-            return info;
-        }).collect(Collectors.toList()));
-
-        return ResultData.success(true);
+    /**
+     * 更新课程信息
+     */
+    @PutMapping("/update")
+    public ResultData<Integer> update(@Valid @RequestBody @NotEmpty List<DetailCourseInfo> req) {
+        List<CourseInfo> courseInfos = ConvertData.INSTANCE.convert2CourseInfoList2(req);
+        int row = courseInfoMapper.updateByCourseIdAndUserId(courseInfos);
+        return ResultData.success(row);
     }
     /**
      * 解析图片课程
@@ -90,7 +82,7 @@ public class CourseController {
             if (body.getColStart() == 0 || body.getRowStart() == 0) {
                 continue;
             }
-            SimpleCourseInfoRes courseInfo = ConvertMapping.INSTANCE.buildSimpleCourseInfoRes(body);
+            SimpleCourseInfoRes courseInfo = ConvertData.INSTANCE.buildSimpleCourseInfoRes(body);
             result.add(courseInfo);
         }
         return ResultData.success(result);
@@ -102,7 +94,7 @@ public class CourseController {
      */
     @PostMapping("/createV2")
     public ResultData<Boolean> creatCourseInfoByCourse(@Valid @RequestBody @NotEmpty List<CourseInfoReq> courseInfos) {
-        List<CourseInfo> result = ConvertMapping.INSTANCE.convert2CourseInfoList(courseInfos);
+        List<CourseInfo> result = ConvertData.INSTANCE.convert2CourseInfoList(courseInfos);
         courseInfoMapper.batchInsert(result);
         return ResultData.success(true);
     }
@@ -130,7 +122,7 @@ public class CourseController {
             if (body.getColStart() == 0 || body.getRowStart() == 0) {
                 continue;
             }
-            CourseInfo courseInfo = ConvertMapping.INSTANCE.buildCourseInfo(userId, body);
+            CourseInfo courseInfo = ConvertData.INSTANCE.buildCourseInfo(userId, body);
             result.add(courseInfo);
         }
         courseInfoMapper.batchInsert(result);
@@ -144,7 +136,7 @@ public class CourseController {
     @GetMapping("/info")
     public ResultData<List<DetailCourseInfo>> courseInfo(@NotBlank String userId) {
         List<CourseInfo> courseInfos = courseInfoMapper.selectByUserId(userId);
-        List<DetailCourseInfo> result = ConvertMapping.INSTANCE.convert2DetailCourseInfoList(courseInfos);
+        List<DetailCourseInfo> result = ConvertData.INSTANCE.convert2DetailCourseInfoList(courseInfos);
         return ResultData.success(result);
     }
 

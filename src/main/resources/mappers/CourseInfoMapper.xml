@@ -34,7 +34,7 @@
   </insert>
   <insert id="insertSelective" parameterType="com.course.miniapp.repo.model.CourseInfo">
     insert into course
-    <trim prefix="(" suffix=")" suffixOverrides=",">
+    <trim prefix="(" suffix=")">
       <if test="courseId != null">
         course_id,
       </if>
@@ -60,7 +60,7 @@
         teacher,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <trim prefix="values (" suffix=")">
       <if test="courseId != null">
         #{courseId,jdbcType=BIGINT},
       </if>
@@ -114,62 +114,52 @@
     </set>
     where course_id = #{courseId,jdbcType=BIGINT}
   </update>
-  <update id="updateByCourseIdAndUserId" parameterType="com.course.miniapp.repo.model.CourseInfo">
+  <update id="updateByCourseIdAndUserId">
     update course
     <set>
-      <if test="weekday != null">
+
         weekday =
-        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+        <trim prefix="(case" suffix="end)">
           <foreach collection="list" item="i">
             when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.weekday}
           </foreach>
         </trim>
-      </if>
 
-      <if test="nTh != null">
-        n_th =
-        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+        , n_th =
+        <trim prefix="(case" suffix="end)">
           <foreach collection="list" item="i">
             when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.nTh}
-          </foreach>,
+          </foreach>
         </trim>
-      </if>
 
-      <if test="courseInfo != null">
-        course_info =
-        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+      , course_info =
+        <trim prefix="(case" suffix="end)">
           <foreach collection="list" item="i">
             when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.courseInfo}
-          </foreach>,
+          </foreach>
         </trim>
-      </if>
 
-      <if test="weekNum != null">
-        week_num =
-        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+      , week_num =
+        <trim prefix="(case" suffix="end)">
           <foreach collection="list" item="i">
             when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.weekNum}
-          </foreach>,
+          </foreach>
         </trim>
-      </if>
 
-      <if test="place != null">
-        place =
-        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+      , place =
+        <trim prefix="(case" suffix="end)">
           <foreach collection="list" item="i">
             when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.place}
-          </foreach>,
+          </foreach>
         </trim>
-      </if>
 
-      <if test="teacher != null">
-        teacher =
-        <trim prefix="(case" suffix="end)" suffixOverrides=",">
+      , teacher =
+        <trim prefix="(case" suffix="end)">
           <foreach collection="list" item="i">
             when course_id = #{i.courseId} and user_id = #{i.userId} then #{i.teacher}
-          </foreach>,
+          </foreach>
         </trim>
-      </if>
+
     </set>
 
     <where>

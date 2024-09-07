@@ -15,16 +15,22 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 @Mapper
-public interface ConvertMapping {
+public interface ConvertData {
 
-    ConvertMapping INSTANCE = Mappers.getMapper(ConvertMapping.class);
+    ConvertData INSTANCE = Mappers.getMapper(ConvertData.class);
 
     @Mapping(target = "weekNum", source = "req.weekNum", qualifiedByName = "convert2JsonString")
     @Mapping(target = "nTh", source = "req.NTh", qualifiedByName = "convert2JsonString")
     @Mapping(target = "courseId", expression = "java(RandomStrGen.generateCourseId())")
     CourseInfo convert2CourseInfo(CourseInfoReq req);
 
+    @Mapping(target = "weekNum", source = "req.weekNum", qualifiedByName = "convert2JsonString")
+    @Mapping(target = "nTh", source = "req.NTh", qualifiedByName = "convert2JsonString")
+    CourseInfo convert2CourseInfo2(DetailCourseInfo req);
+
     List<CourseInfo> convert2CourseInfoList(List<CourseInfoReq> req);
+
+    List<CourseInfo> convert2CourseInfoList2(List<DetailCourseInfo> req);
 
 
     @Mapping(target = "weekNum", source = "info.weekNum", qualifiedByName = "convert2List")

@@ -16,8 +16,8 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
-#        password: 12345678
-        password: huyali520
+        password: 12345678
+#        password: huyali520
         url: jdbc:mysql://localhost:3306/test?useSSL=false&socketTimeout=60000&connectTimeout=30000&serverTimezone=UTC&allowPublicKeyRetrieval=true
 
 mybatis:
