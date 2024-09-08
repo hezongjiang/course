@@ -194,6 +194,13 @@
         delete from course
         where user_id = #{userId}
     </delete>
+    <delete id="deleteByUserIdAndCourseId">
+      delete from course
+      where user_id = #{userId}
+      <if test="courseId != null and courseId > 1">
+        and course_id = #{courseId}
+      </if>
+    </delete>
     <insert id="batchInsert" parameterType="java.util.List">
         insert into course (course_id, weekday, n_th, course_info, user_id, week_num, place, teacher)
         values

@@ -144,8 +144,8 @@ public class CourseController {
      * 删除课程
      */
     @DeleteMapping("/delete")
-    public ResultData<Boolean> courseDelete(@NotBlank String userId) {
-        return ResultData.success(courseInfoMapper.deleteByUserId(userId) > 0);
+    public ResultData<Integer> courseDelete(@NotBlank String userId, Long courseId) {
+        return ResultData.success(courseInfoMapper.deleteByUserIdAndCourseId(userId, courseId));
     }
 
     

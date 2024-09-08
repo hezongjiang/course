@@ -12,6 +12,8 @@ public interface CourseInfoMapper {
 
     int deleteByUserId(String userId);
 
+    int deleteByUserIdAndCourseId(String userId, Long courseId);
+
     int insert(CourseInfo record);
 
     int batchInsert(@Param("list") List<CourseInfo> list);
