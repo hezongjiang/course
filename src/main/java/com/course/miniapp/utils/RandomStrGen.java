@@ -17,7 +17,7 @@ public class RandomStrGen {
     }
 
     public static Long generateCourseId() {
-        return System.currentTimeMillis() - Long.parseLong(generate(3));
+        return System.currentTimeMillis() + Long.parseLong(generate(3));
     }
 
     public static String generateUserId() {
