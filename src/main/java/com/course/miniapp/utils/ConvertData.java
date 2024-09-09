@@ -7,6 +7,7 @@ import com.course.miniapp.request.CourseInfoReq;
 import com.course.miniapp.response.DetailCourseInfo;
 import com.course.miniapp.response.SimpleCourseInfoRes;
 import com.course.miniapp.response.TableResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -40,21 +41,29 @@ public interface ConvertData {
     List<DetailCourseInfo> convert2DetailCourseInfoList(List<CourseInfo> info);
 
 
-    default CourseInfo buildCourseInfo(String userId, TableResponse.Body body) {
+    default CourseInfo buildCourseInfo(String userId, TableResponse.Body body, TableResponse.Body firstRow) {
         CourseInfo courseInfo = new CourseInfo();
         courseInfo.setCourseId(RandomStrGen.generateCourseId());
         courseInfo.setUserId(userId);
         courseInfo.setCourseInfo(body.getWords());
-        courseInfo.setnTh(JSON.toJSONString(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd())));
+        if (firstRow != null && StringUtils.isNotBlank(firstRow.getWords())) {
+            courseInfo.setnTh(JSON.toJSONString(RegexUtil.extractNth(firstRow.getWords())));
+        } else {
+            courseInfo.setnTh(JSON.toJSONString(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd())));
+        }
         courseInfo.setWeekday(body.getColStart().toString());
         return courseInfo;
     }
 
 
-    default SimpleCourseInfoRes buildSimpleCourseInfoRes(TableResponse.Body body) {
+    default SimpleCourseInfoRes buildSimpleCourseInfoRes(TableResponse.Body body, TableResponse.Body firstRow) {
         SimpleCourseInfoRes courseInfo = new SimpleCourseInfoRes();
         courseInfo.setCourseInfo(body.getWords());
-        courseInfo.setNTh(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd()));
+        if (firstRow != null && StringUtils.isNotBlank(firstRow.getWords())) {
+            courseInfo.setNTh(RegexUtil.extractNth(firstRow.getWords()));
+        } else {
+            courseInfo.setNTh(NumberUtil.fromToEnd(body.getRowStart(), body.getRowDnd()));
+        }
         courseInfo.setWeekday(body.getColStart().toString());
         return courseInfo;
     }

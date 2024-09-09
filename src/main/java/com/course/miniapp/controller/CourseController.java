@@ -10,6 +10,8 @@ import com.course.miniapp.response.TableResponse;
 import com.course.miniapp.utils.ConvertData;
 import com.course.miniapp.utils.TableIdentifyUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 获取课程
@@ -73,21 +76,39 @@ public class CourseController {
         List<TableResponse.Body> bodyList = tableResponse.getTablesResult().getBody();
         List<SimpleCourseInfoRes> result = new ArrayList<>();
         for (TableResponse.Body body : bodyList) {
-            if (weekday.contains(body.getWords())) {
+            if (isTableHeader(body)) {
                 continue;
             }
-            if (body.getWords().contains("第") && body.getWords().contains("节")) {
-                continue;
-            }
-            if (body.getColStart() == 0 || body.getRowStart() == 0) {
-                continue;
-            }
-            SimpleCourseInfoRes courseInfo = ConvertData.INSTANCE.buildSimpleCourseInfoRes(body);
+            TableResponse.Body firstRow = getFirstRow(bodyList, body);
+            SimpleCourseInfoRes courseInfo = ConvertData.INSTANCE.buildSimpleCourseInfoRes(body, firstRow);
             result.add(courseInfo);
         }
         return ResultData.success(result);
     }
 
+    @Nullable
+    private TableResponse.Body getFirstRow(List<TableResponse.Body> bodyList, TableResponse.Body body) {
+        return bodyList.stream().filter(e -> Objects.equals(e.getRowStart(), body.getRowStart()) && Objects.equals(e.getRowDnd(), body.getRowDnd()) && e.getColStart() == 0 && e.getColEnd() == 1).findAny().orElse(null);
+    }
+
+    /**
+     * 是否为表头
+     */
+    private boolean isTableHeader(TableResponse.Body body) {
+        if (StringUtils.isBlank(body.getWords())) {
+            return true;
+        }
+        if (weekday.contains(body.getWords())) {
+            return true;
+        }
+        if (body.getWords().contains("第") && body.getWords().contains("节")) {
+            return true;
+        }
+        if (body.getColStart() == 0 || body.getRowStart() == 0) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 创建课程
@@ -113,16 +134,11 @@ public class CourseController {
         List<TableResponse.Body> bodyList = tableResponse.getTablesResult().getBody();
         List<CourseInfo> result = new ArrayList<>();
         for (TableResponse.Body body : bodyList) {
-            if (weekday.contains(body.getWords())) {
+            if (isTableHeader(body)) {
                 continue;
             }
-            if (body.getWords().contains("第") && body.getWords().contains("节")) {
-                continue;
-            }
-            if (body.getColStart() == 0 || body.getRowStart() == 0) {
-                continue;
-            }
-            CourseInfo courseInfo = ConvertData.INSTANCE.buildCourseInfo(userId, body);
+            TableResponse.Body firstRow = getFirstRow(bodyList, body);
+            CourseInfo courseInfo = ConvertData.INSTANCE.buildCourseInfo(userId, body, firstRow);
             result.add(courseInfo);
         }
         courseInfoMapper.batchInsert(result);
