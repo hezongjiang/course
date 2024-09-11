@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 /**
@@ -40,7 +41,7 @@ public class WxMaUserController {
      * 登陆接口
      */
     @GetMapping("/login")
-    public ResultData<String> login(@PathVariable String appid, String code) {
+    public ResultData<String> login(@PathVariable String appid, String code, HttpServletRequest request) {
         if (StringUtils.isBlank(code)) {
             return ResultData.fail(0, "empty code");
         }
@@ -63,6 +64,9 @@ public class WxMaUserController {
             userInfo.setOpenid(session.getOpenid());
             userInfo.setUserid(RandomStrGen.generateUserId());
             userInfoMapper.insertSelective(userInfo);
+
+            request.getSession().setAttribute("userId", userInfo.getUserid());
+
             return ResultData.success(userInfo.getUserid());
 
 //            final WxMaSubscribeMessage msg = WxMaSubscribeMessage
