@@ -1,6 +1,5 @@
 package com.course.miniapp.config;
 
-import com.alibaba.fastjson.JSON;
 import com.course.miniapp.response.ResultData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -21,20 +20,17 @@ public class UserLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("执行了拦截器的preHandle方法");
-        try {
-            HttpSession session = request.getSession();
-            //统一拦截（查询当前session是否存在user）(这里user会在每次登录成功后，写入session)
-            Object userId = session.getAttribute("userId");
-            if (userId != null && StringUtils.isNotBlank(userId.toString())) {
-                return true;
-            }
-            // 用户未登录，返回错误信息
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 设置状态码为401 Unauthorized
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(ResultData.fail(0, "未登录")));
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        //统一拦截（查询当前session是否存在user）(这里user会在每次登录成功后，写入session)
+        Object userId = request.getSession().getAttribute("userId");
+        if (userId != null && StringUtils.isNotBlank(userId.toString())) {
+            return true;
         }
+        // 用户未登录，返回错误信息
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 设置状态码为401 Unauthorized
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(ResultData.fail(0, "未登录")));
+
         //如果设置为false时，被请求时，拦截器执行到此处将不会继续操作
         //如果设置为true时，请求将会继续执行后面的操作
         return false;
