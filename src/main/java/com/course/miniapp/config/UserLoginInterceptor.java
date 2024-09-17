@@ -1,5 +1,6 @@
 package com.course.miniapp.config;
 
+import com.course.miniapp.controller.WxMaUserController;
 import com.course.miniapp.response.ResultData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -7,9 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 public class UserLoginInterceptor implements HandlerInterceptor {
@@ -21,18 +24,30 @@ public class UserLoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("执行了拦截器的preHandle方法");
 
+        if (request.getCookies() == null || request.getCookies().length == 0) {
+            return unauthorized(response);
+        }
         //统一拦截（查询当前session是否存在user）(这里user会在每次登录成功后，写入session)
-        Object userId = request.getSession().getAttribute("userId");
-        if (userId != null && StringUtils.isNotBlank(userId.toString())) {
+        Cookie cookie = Arrays.stream(request.getCookies()).filter(c -> WxMaUserController.USERID.equals(c.getName())).findAny().orElse(null);
+
+        if (cookie == null) {
+            return unauthorized(response);
+        }
+        String userId = cookie.getValue();
+
+        if (StringUtils.isNotBlank(userId)) {
             return true;
         }
+        return unauthorized(response);
+        //如果设置为false时，被请求时，拦截器执行到此处将不会继续操作
+        //如果设置为true时，请求将会继续执行后面的操作
+    }
+
+    private boolean unauthorized(HttpServletResponse response) throws IOException {
         // 用户未登录，返回错误信息
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 设置状态码为401 Unauthorized
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(ResultData.fail(0, "未登录")));
-
-        //如果设置为false时，被请求时，拦截器执行到此处将不会继续操作
-        //如果设置为true时，请求将会继续执行后面的操作
         return false;
     }
 

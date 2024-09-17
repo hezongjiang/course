@@ -3,7 +3,6 @@ package com.course.miniapp.controller;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
-import cn.binarywang.wx.miniapp.bean.WxMaSubscribeMessage;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import cn.binarywang.wx.miniapp.util.WxMaConfigHolder;
 import com.course.miniapp.repo.UserInfoMapper;
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 微信小程序用户接口
@@ -32,6 +31,9 @@ import java.util.Arrays;
 @Slf4j
 @RequestMapping("/wx/user/{appid}")
 public class WxMaUserController {
+
+    public static final String USERID = "userid";
+
     private final WxMaService wxMaService;
 
     @Autowired
@@ -41,7 +43,7 @@ public class WxMaUserController {
      * 登陆接口
      */
     @GetMapping("/login")
-    public ResultData<String> login(@PathVariable String appid, String code, HttpServletRequest request) {
+    public ResultData<String> login(@PathVariable String appid, String code, HttpServletResponse response) {
         if (StringUtils.isBlank(code)) {
             return ResultData.fail(0, "empty code");
         }
@@ -65,7 +67,12 @@ public class WxMaUserController {
             userInfo.setUserid(RandomStrGen.generateUserId());
             userInfoMapper.insertSelective(userInfo);
 
-            request.getSession().setAttribute("userId", userInfo.getUserid());
+            // 登录成功，设置Cookie
+            Cookie loginCookie = new Cookie(USERID, userInfo.getUserid());
+            loginCookie.setPath("/");
+            loginCookie.setHttpOnly(true); // 防止JavaScript读取Cookie
+            loginCookie.setSecure(false); // 在开发环境下可以设置为false，生产环境下应该设置为true
+            response.addCookie(loginCookie);
 
             return ResultData.success(userInfo.getUserid());
 

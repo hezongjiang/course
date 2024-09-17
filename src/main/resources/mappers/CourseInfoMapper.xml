@@ -190,6 +190,14 @@
         from course
         where user_id = #{userId}
     </select>
+    <select id="batchSelectByCourseId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from course
+      where course_id > #{courseId}
+      order by course_id asc
+      limit 100
+    </select>
     <delete id="deleteByUserId" parameterType="java.lang.String">
         delete from course
         where user_id = #{userId}

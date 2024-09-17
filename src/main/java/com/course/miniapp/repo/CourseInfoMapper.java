@@ -29,4 +29,6 @@ public interface CourseInfoMapper {
     int updateByPrimaryKey(CourseInfo record);
 
     List<CourseInfo> selectByUserId(String userId);
+
+    List<CourseInfo> batchSelectByCourseId(long courseId);
 }
