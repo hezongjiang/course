@@ -23,22 +23,22 @@ public class UserLoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("执行了拦截器的preHandle方法");
-
-        if (request.getCookies() == null || request.getCookies().length == 0) {
-            return unauthorized(response);
-        }
-        //统一拦截（查询当前session是否存在user）(这里user会在每次登录成功后，写入session)
-        Cookie cookie = Arrays.stream(request.getCookies()).filter(c -> WxMaUserController.USERID.equals(c.getName())).findAny().orElse(null);
-
-        if (cookie == null) {
-            return unauthorized(response);
-        }
-        String userId = cookie.getValue();
-
-        if (StringUtils.isNotBlank(userId)) {
-            return true;
-        }
-        return unauthorized(response);
+        return true;
+//        if (request.getCookies() == null || request.getCookies().length == 0) {
+//            return unauthorized(response);
+//        }
+//        //统一拦截（查询当前session是否存在user）(这里user会在每次登录成功后，写入session)
+//        Cookie cookie = Arrays.stream(request.getCookies()).filter(c -> WxMaUserController.USERID.equals(c.getName())).findAny().orElse(null);
+//
+//        if (cookie == null) {
+//            return unauthorized(response);
+//        }
+//        String userId = cookie.getValue();
+//
+//        if (StringUtils.isNotBlank(userId)) {
+//            return true;
+//        }
+//        return unauthorized(response);
         //如果设置为false时，被请求时，拦截器执行到此处将不会继续操作
         //如果设置为true时，请求将会继续执行后面的操作
     }
